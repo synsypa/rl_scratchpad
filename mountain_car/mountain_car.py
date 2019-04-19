@@ -38,7 +38,7 @@ class MountainCar:
             other_rewards += (self.epsilon/len(actions)) * self.Q[state[0], state[1], r]
         return greedy_reward + other_rewards
     
-    def calc_avg_reward(self):
+    def _calc_avg_reward(self):
         avg_ep_reward = np.mean(self.ep_reward)
         self.reward_list.append(avg_ep_reward)
         self.ep_reward = []
@@ -46,7 +46,7 @@ class MountainCar:
     
     def run_episode(self, decay, render = False):
         if self.episodes % 500 == 0 or render:
-            print(f'Running episode {self.episodes} using {self.algo}...')
+            print(f'Running episode {self.episodes} using {self.algo}, epsilon={round(self.epsilon,5)}, alpha={self.alpha}, discount={self.gamma}')
         end = False
         total_reward, reward = 0,0
         # Initial State
@@ -90,23 +90,28 @@ class MountainCar:
         self.episodes += 1
         self.epsilon -= decay
         if self.episodes % 100 == 0:
-            avg_reward = self.calc_avg_reward()
+            avg_reward = self._calc_avg_reward()
             if self.episodes % 500 == 0:
                 print(f'Avg Reward Over Last 100 Episodes = {avg_reward}...')
             
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", dest='algo', choices=['sarsa', 'expected_sarsa', 'q'])
+    parser.add_argument("-a", dest='algo', choices=['sarsa', 'expected_sarsa', 'q'], default = 'sarsa')
+    parser.add_argument("-n", dest='episodes', default=5000)
+    parser.add_argument("-l", dest='alpha', default=.1)
+    parser.add_argument("-d", dest='gamma', default=.9)
+    parser.add_argument("-e", dest='epsilon', default=.75)
     args = parser.parse_args()
     
     env = gym.make('MountainCar-v0')
     env.reset()
-    episodes = 5000
-    alpha = .1
-    gamma = .9
-    epsilon = .75
+    algo = args.algo
+    episodes = args.episodes
+    alpha = args.alpha
+    gamma = args.gamma
+    epsilon = args.epsilon
     decay = epsilon/episodes
-    car = MountainCar(env, args.algo, alpha, gamma, epsilon)
+    car = MountainCar(env, algo, alpha, gamma, epsilon)
                       
     for i in range(episodes):
         if i >= episodes - 10:
