@@ -32,7 +32,7 @@ class MountainCar:
         greedy_action = np.argmax(self.Q[state[0], state[1]])
         greedy_reward = (1-self.epsilon) * self.Q[state[0], state[1], greedy_action]
         # other actions, ep/n_actions * reward
-        actions.remove(greedy_action)
+        # actions.remove(greedy_action)
         other_rewards = 0
         for r in actions:
             other_rewards += (self.epsilon/len(actions)) * self.Q[state[0], state[1], r]
