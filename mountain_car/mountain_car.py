@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import argparse
+import time
 
 class MountainCar:
     def __init__(self, env, algo, alpha, gamma, epsilon):
@@ -85,6 +86,7 @@ class MountainCar:
                 print('Success :)')
             else: 
                 print('Failure :(')
+            time.sleep(1)
             
         self.ep_reward.append(total_reward)
         self.episodes += 1
@@ -114,7 +116,7 @@ if __name__ == "__main__":
     car = MountainCar(env, algo, alpha, gamma, epsilon)
                       
     for i in range(episodes):
-        if i >= episodes - 10:
+        if i >= episodes - 50:
             car.run_episode(decay, render = True)
         else:
             car.run_episode(decay)
